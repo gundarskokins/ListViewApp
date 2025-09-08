@@ -15,10 +15,18 @@ struct ItemListView: View {
             Group {
                 if viewModel.isLoading {
                     Text("Loading...")
-                } else if (viewModel.errorMessage != nil) {
+                } else if let error = viewModel.errorMessage {
                     VStack {
-                        Text(viewModel.errorMessage!)
+                        Text(error)
                             .foregroundColor(.red)
+                        Button(action: {
+                            Task { await viewModel.refresh() }
+                        }) {
+                            Label("Retry", systemImage: "arrow.clockwise")
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(8)
+                        }
                         if !viewModel.items.isEmpty {
                             listContent
                         }
